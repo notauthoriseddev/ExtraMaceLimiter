@@ -10,18 +10,18 @@ public class ExtraMaceLimiter extends JavaPlugin {
     public void onEnable() {
         instance = this;
         
-        // Save default config if it doesn't exist
+    
         saveDefaultConfig();
         
-        // Register the event listener
+        // event listener
         getServer().getPluginManager().registerEvents(new InventoryListener(this), this);
         
-        // Register the command
+        // command listener
         ExtraMaceLimiterCommand commandHandler = new ExtraMaceLimiterCommand(this);
         getCommand("extramacelimiter").setExecutor(commandHandler);
         getCommand("extramacelimiter").setTabCompleter(commandHandler);
         
-        // Simple startup message
+        // startup message
         getLogger().info("Extra Mace Limiter v" + getDescription().getVersion() + " has been enabled!");
     }
 

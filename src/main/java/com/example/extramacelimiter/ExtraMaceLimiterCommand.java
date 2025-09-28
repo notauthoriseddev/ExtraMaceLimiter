@@ -21,13 +21,13 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(CommandSender sender, Command command, String label, String[] args) {
-        // Check permission
+        // permission check
         if (!sender.hasPermission("extramacelimiter.admin")) {
             sender.sendMessage(ChatColor.RED + "You don't have permission to use this command!");
             return true;
         }
 
-        // If no arguments, show help
+        // help incase of no args
         if (args.length == 0) {
             showHelp(sender);
             return true;
@@ -57,18 +57,15 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
         return true;
     }
 
-    /**
-     * Handles the reload subcommand
-     */
     private void handleReload(CommandSender sender) {
         try {
-            // Reload the configuration
+            // reload config
             plugin.reloadConfig();
             
-            // Send success message
+            // send successful restart
             sender.sendMessage(ChatColor.GREEN + "Extra Mace Limiter configuration reloaded successfully!");
             
-            // Show updated config summary
+            // updated config (remove later)
             int maxMaces = plugin.getConfig().getInt("max-maces-in-inventory", 2);
             String maxMacesDisplay = maxMaces == -1 ? "unlimited" : String.valueOf(maxMaces);
             
@@ -85,9 +82,6 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
         }
     }
 
-    /**
-     * Handles the version subcommand
-     */
     private void handleVersion(CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "=== Extra Mace Limiter ===");
         sender.sendMessage(ChatColor.YELLOW + "Version: " + ChatColor.WHITE + plugin.getDescription().getVersion());
@@ -96,27 +90,14 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.GOLD + "========================");
     }
 
-    /**
-     * Handles the author subcommand
-     */
+
     private void handleAuthor(CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "=== Extra Mace Limiter ===");
         sender.sendMessage(ChatColor.YELLOW + "Author: " + ChatColor.WHITE + plugin.getDescription().getAuthors().get(0));
         sender.sendMessage(ChatColor.YELLOW + "Website: " + ChatColor.WHITE + plugin.getDescription().getWebsite());
-        
-        // ASCII art display
-        sender.sendMessage(ChatColor.AQUA + " _____     _              ___  ___                 _     _           _ _            ");
-        sender.sendMessage(ChatColor.AQUA + "|  ___|   | |             |  \\/  |                | |   (_)         (_) |           ");
-        sender.sendMessage(ChatColor.AQUA + "| |____  _| |_ _ __ __ _  | .  . | __ _  ___ ___  | |    _ _ __ ___  _| |_ ___ _ __ ");
-        sender.sendMessage(ChatColor.AQUA + "|  __\\ \\/ / __| '__/ _` | | |\\/| |/ _` |/ __/ _ \\ | |   | | '_ ` _ \\| | __/ _ \\ '__|");
-        sender.sendMessage(ChatColor.AQUA + "| |___>  <| |_| | | (_| | | |  | | (_| | (_|  __/ | |___| | | | | | | | ||  __/ |   ");
-        sender.sendMessage(ChatColor.AQUA + "\\____/_/\\_\\\\__|_|  \\__,_| \\_|  |_/\\__,_|\\___\\___| \\_____/_|_| |_| |_|_|\\__\\___|_|   ");
-        sender.sendMessage(ChatColor.GOLD + "========================");
     }
 
-    /**
-     * Shows the help menu
-     */
+
     private void showHelp(CommandSender sender) {
         sender.sendMessage(ChatColor.GOLD + "=== Extra Mace Limiter Commands ===");
         sender.sendMessage(ChatColor.YELLOW + "/extramacelimiter reload" + ChatColor.GRAY + " - Reload the plugin configuration");
@@ -127,9 +108,7 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
         sender.sendMessage(ChatColor.GOLD + "==================================");
     }
 
-    /**
-     * Counts how many storage types are blocked in the config
-     */
+
     private int getBlockedStorageCount() {
         int count = 0;
         String[] storageTypes = {"chest", "ender-chest", "barrel", "shulker-box", "hopper", "dropper", "dispenser"};
@@ -147,13 +126,13 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender sender, Command command, String alias, String[] args) {
         List<String> completions = new ArrayList<>();
 
-        // Check permission for tab completion
+        // dynamic tab completion if they have perms
         if (!sender.hasPermission("extramacelimiter.admin")) {
             return completions;
         }
 
         if (args.length == 1) {
-            // First argument - subcommands
+            // dynamic compeltions
             String[] subCommands = {"reload", "version", "author", "help"};
             String input = args[0].toLowerCase();
             

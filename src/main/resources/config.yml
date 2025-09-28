@@ -11,107 +11,78 @@
 # Author: notauthorised
 # Discord: https://discord.gg/hBD2psrM6t
 
-# =============================================================================
-# MACE INVENTORY LIMITS
-# =============================================================================
 
 # Maximum number of maces a player can have in their inventory at once
 # Set to -1 for unlimited maces
 # Default: 2 (players can carry up to 2 maces)
 max-maces-in-inventory: 2
 
-# Prevent players from picking up maces when they have reached the maximum limit
+# Prevent players from picking up maces when they have reached the limit
 # true = block pickup when at max maces (recommended)
-# false = allow pickup even at max maces
+# false = allow pickup even at max maces (basically turning this feature off)
 stop-pickup-at-max-maces: true
 
-# =============================================================================
-# BLOCKED STORAGE INVENTORIES
-# =============================================================================
-# Configure which storage inventories should block mace placement
-# Set to true to block maces, false to allow maces
+
+
+# which storage blocks can maces be placed in
+# Set to true to block maces, false to allow maces to be put in it.
 
 blocked-storages:
   # Regular chests (including chest boats and minecart chests)
-  # Blocks placement in wooden chests, stone chests, and chest vehicles
   chest: true
   
-  # Ender chests (personal interdimensional storage)
-  # Blocks placement in ender chest inventories
+  # Ender chests
   ender-chest: true
   
-  # Barrels (compact storage blocks)
-  # Blocks placement in barrel inventories
+  # Barrels 
   barrel: true
   
-  # Shulker boxes (portable storage containers)
-  # Blocks placement in shulker box inventories of all colors
+  # Shulker boxes 
   shulker-box: true
   
-  # Hoppers (item transport and storage)
-  # Blocks placement in hopper inventories
+  # Hoppers
   hopper: true
   
-  # Droppers (item dispensing storage)
-  # Blocks placement in dropper inventories
+  # Droppers 
   dropper: true
   
-  # Dispensers (automated item dispensing)
-  # Blocks placement in dispenser inventories
+  # Dispensers 
   dispenser: true
 
-# =============================================================================
-# AUTOMATED PICKUP PREVENTION
-# =============================================================================
 
 # Prevent hoppers from picking up maces from the ground
-# This stops hoppers from automatically collecting dropped maces
-# true = block hopper pickup (recommended)
-# false = allow hopper pickup
+# true = block hopper pickup maces (recommended)
+# false = allow hopper pickup maces
 block-hopper-pickup: true
 
-# Prevent hopper minecarts from picking up maces while moving
-# This stops hopper minecarts from automatically collecting dropped maces
+# Prevent hopper minecarts from picking up maces
 # true = block hopper minecart pickup (recommended)  
 # false = allow hopper minecart pickup
 block-hopper-minecart-pickup: true
 
 # Prevent placing maces in item frames (including glow item frames)
-# This stops players from displaying maces in item frames on walls
 # true = block item frame placement (recommended)
 # false = allow item frame placement
 block-item-frame-placement: true
 
-# =============================================================================
-# MESSAGE SETTINGS
-# =============================================================================
 
-# Configure when warning messages are sent to players
-
+# Warning messages (i made these look similar to worldguard messages)
 messages:
   # Storage blocking messages (when trying to place maces in blocked inventories or item frames)
   storage-blocking:
-    # Show message on first attempt, then every X attempts after that
-    # Example: 5 means show on attempts 1, 6, 11, 16, 21, etc.
+    # Show message on first attempt, then every %frequency% attempts after
     frequency: 5
-    # The message to show (supports color codes with &)
+
     text: "&c&lHey! &7You can't move a mace outside your inventory."
   
   # Pickup blocking messages (when trying to pick up maces at max limit)
   pickup-blocking:
-    # Show message on first attempt, then every X attempts after that
-    # Example: 100 means show on attempts 1, 100, 200, 300, etc.
+    # Show message on first attempt, then every %frequency% attempts after
     frequency: 100
-    # The message to show (supports color codes with &)
+
     text: "&c&lHey! &7You can't carry more than 2 maces at once."
 
-# =============================================================================
-# ADVANCED SETTINGS
-# =============================================================================
 
-# Enable debug mode for troubleshooting
-# Shows additional console messages for developers
 debug: false
 
-# Plugin version (do not modify)
 config-version: 1

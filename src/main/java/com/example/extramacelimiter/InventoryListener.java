@@ -25,19 +25,16 @@ public class InventoryListener implements Listener {
 
     private final ExtraMaceLimiter plugin;
     
-    // Track player attempts to place maces in blocked inventories
+    // for player attempts to transfer maces
     private final Map<UUID, Integer> playerAttempts = new HashMap<>();
     
-    // Track player attempts to pick up maces when at limit (2+ maces)
     private final Map<UUID, Integer> playerPickupAttempts = new HashMap<>();
 
     public InventoryListener(ExtraMaceLimiter plugin) {
         this.plugin = plugin;
     }
 
-    /**
-     * Gets the set of blocked inventory types based on config settings
-     */
+
     private Set<InventoryType> getBlockedInventories() {
         Set<InventoryType> blocked = EnumSet.noneOf(InventoryType.class);
         
@@ -68,7 +65,6 @@ public class InventoryListener implements Listener {
 
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
-        // Make sure the event involves a player
         if (!(event.getWhoClicked() instanceof Player)) {
             return;
         }
@@ -77,20 +73,20 @@ public class InventoryListener implements Listener {
         Inventory inv = event.getInventory();
         Set<InventoryType> blockedInventories = getBlockedInventories();
 
-        // Check if the inventory is one of the blocked storage types
+        // check the inventory type
         if (blockedInventories.contains(inv.getType())) {
             boolean shouldBlock = false;
             
-            // Handle clicking in the storage inventory itself (not player inventory)
+            // handle clicking the storage inv
             if (event.getRawSlot() < inv.getSize()) {
                 ItemStack holding = event.getCursor();
 
-                // Check if the player is trying to place a mace
+                // check if its a mace
                 if (holding != null && holding.getType() == Material.MACE) {
                     shouldBlock = true;
                 }
                 
-                // Handle hotkey swaps (pressing number keys 1-9)
+                // the hotkey swapping
                 if (event.getHotbarButton() != -1) {
                     ItemStack hotbarItem = player.getInventory().getItem(event.getHotbarButton());
                     if (hotbarItem != null && hotbarItem.getType() == Material.MACE) {
@@ -98,17 +94,16 @@ public class InventoryListener implements Listener {
                     }
                 }
             }
-            // Handle shift-clicking from player inventory to storage inventory
+            // shift clicking
             else if (event.isShiftClick()) {
                 ItemStack clicked = event.getCurrentItem();
                 
-                // Check if the clicked item is a mace
                 if (clicked != null && clicked.getType() == Material.MACE) {
                     shouldBlock = true;
                 }
             }
             
-            // If we should block the action, cancel it and handle the message
+            // cancelling event
             if (shouldBlock) {
                 event.setCancelled(true);
                 handleMaceBlockMessage(player);
@@ -116,29 +111,26 @@ public class InventoryListener implements Listener {
         }
     }
     
-    /**
-     * Prevents hoppers from picking up maces from the ground
-     */
+
     @EventHandler
     public void onInventoryPickupItem(InventoryPickupItemEvent event) {
-        // Check config settings for hopper pickup blocking
         if (!plugin.getConfig().getBoolean("block-hopper-pickup", true) && 
             !plugin.getConfig().getBoolean("block-hopper-minecart-pickup", true)) {
             return;
         }
         
-        // Check if the item being picked up is a mace
+        // check if pickup item is a mace
         if (event.getItem().getItemStack().getType() == Material.MACE) {
             Inventory inventory = event.getInventory();
             
-            // Check if it's a hopper and hopper pickup is blocked
+            // hopper cancelling
             if (inventory.getType() == InventoryType.HOPPER && 
                 plugin.getConfig().getBoolean("block-hopper-pickup", true)) {
                 event.setCancelled(true);
                 return;
             }
             
-            // Check if it's a hopper minecart and hopper minecart pickup is blocked
+            // hopper minecart cancelling
             if (inventory.getHolder() instanceof HopperMinecart && 
                 plugin.getConfig().getBoolean("block-hopper-minecart-pickup", true)) {
                 event.setCancelled(true);
@@ -147,23 +139,20 @@ public class InventoryListener implements Listener {
         }
     }
     
-    /**
-     * Prevents hoppers and hopper minecarts from moving maces between inventories
-     */
     @EventHandler
     public void onInventoryMoveItem(InventoryMoveItemEvent event) {
-        // Check if the item being moved is a mace
+
         if (event.getItem().getType() == Material.MACE) {
             Inventory destination = event.getDestination();
             Set<InventoryType> blockedInventories = getBlockedInventories();
             
-            // Check if the destination is a blocked inventory type
+            // check destination type
             if (blockedInventories.contains(destination.getType())) {
                 event.setCancelled(true);
                 return;
             }
             
-            // Additional check for hopper minecarts (they might not show up as HOPPER type)
+            // added check for hoppers
             if (destination.getHolder() instanceof HopperMinecart && 
                 plugin.getConfig().getBoolean("block-hopper-minecart-pickup", true)) {
                 event.setCancelled(true);
@@ -172,32 +161,24 @@ public class InventoryListener implements Listener {
         }
     }
 
-    /**
-     * Prevents players from picking up maces if they already have the maximum amount
-     */
+
     @EventHandler
     public void onPlayerPickupItem(PlayerPickupItemEvent event) {
-        // Check if pickup blocking is enabled
         if (!plugin.getConfig().getBoolean("stop-pickup-at-max-maces", true)) {
             return;
         }
         
         Player player = event.getPlayer();
         
-        // Check if the item being picked up is a mace
         if (event.getItem().getItemStack().getType() == Material.MACE) {
-            // Get max maces from config
             int maxMaces = plugin.getConfig().getInt("max-maces-in-inventory", 2);
             
-            // If unlimited maces (-1), don't block
             if (maxMaces == -1) {
                 return;
             }
             
-            // Count how many maces the player already has
             int maceCount = countMacesInInventory(player);
             
-            // If player already has max or more maces, prevent pickup
             if (maceCount >= maxMaces) {
                 event.setCancelled(true);
                 handleMacePickupBlockMessage(player);
@@ -205,22 +186,18 @@ public class InventoryListener implements Listener {
         }
     }
     
-    /**
-     * Prevents players from placing maces in item frames
-     */
+
     @EventHandler
     public void onPlayerInteractEntity(PlayerInteractEntityEvent event) {
-        // Check if item frame blocking is enabled
         if (!plugin.getConfig().getBoolean("block-item-frame-placement", true)) {
             return;
         }
         
-        // Check if the entity is an item frame (includes glow item frames)
+        // check if its an item frame
         if (event.getRightClicked() instanceof ItemFrame) {
             Player player = event.getPlayer();
             ItemStack heldItem = player.getInventory().getItemInMainHand();
             
-            // Check if the player is trying to place a mace in the item frame
             if (heldItem != null && heldItem.getType() == Material.MACE) {
                 event.setCancelled(true);
                 handleMaceBlockMessage(player);
@@ -228,9 +205,7 @@ public class InventoryListener implements Listener {
         }
     }
 
-    /**
-     * Counts the number of maces in a player's inventory (including hotbar)
-     */
+
     private int countMacesInInventory(Player player) {
         int count = 0;
         ItemStack[] contents = player.getInventory().getContents();
@@ -244,19 +219,14 @@ public class InventoryListener implements Listener {
         return count;
     }
     
-    /**
-     * Handles sending warning messages to players when they try to pick up maces over the limit
-     * Shows message based on config frequency settings
-     */
+
     private void handleMacePickupBlockMessage(Player player) {
         UUID playerId = player.getUniqueId();
         int attempts = playerPickupAttempts.getOrDefault(playerId, 0) + 1;
         playerPickupAttempts.put(playerId, attempts);
         
-        // Get frequency from config (default: 100)
         int frequency = plugin.getConfig().getInt("messages.pickup-blocking.frequency", 100);
         
-        // Show message on first attempt or every X attempts after that
         if (attempts == 1 || attempts % frequency == 0) {
             String message = plugin.getConfig().getString("messages.pickup-blocking.text", 
                 "&c&lHey! &7You can't carry more than 2 maces at once.");
@@ -264,19 +234,14 @@ public class InventoryListener implements Listener {
         }
     }
     
-    /**
-     * Handles sending warning messages to players when they try to place maces in blocked inventories
-     * Shows message based on config frequency settings
-     */
+
     private void handleMaceBlockMessage(Player player) {
         UUID playerId = player.getUniqueId();
         int attempts = playerAttempts.getOrDefault(playerId, 0) + 1;
         playerAttempts.put(playerId, attempts);
         
-        // Get frequency from config (default: 5)
         int frequency = plugin.getConfig().getInt("messages.storage-blocking.frequency", 5);
         
-        // Show message on first attempt or every X attempts after that
         if (attempts == 1 || attempts % frequency == 0) {
             String message = plugin.getConfig().getString("messages.storage-blocking.text", 
                 "&c&lHey! &7You can't move a mace outside your inventory.");
