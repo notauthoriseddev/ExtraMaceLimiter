@@ -1,0 +1,19 @@
+name: ExtraMaceLimiter
+version: 1.0.1
+main: com.example.extramacelimiter.ExtraMaceLimiter
+api-version: 1.21
+description: Advanced mace management plugin with configurable limits and storage restrictions
+author: notauthorised
+website: https://discord.gg/hBD2psrM6t
+
+commands:
+  extramacelimiter:
+    description: Main command for Extra Mace Limiter
+    aliases: [eml, extramacelimiter]
+    usage: /<command> [reload|version|author|help]
+    permission: extramacelimiter.admin
+
+permissions:
+  extramacelimiter.admin:
+    description: Allows access to Extra Mace Limiter admin commands
+    default: op
