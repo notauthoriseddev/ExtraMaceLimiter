@@ -31,11 +31,17 @@ Block mace placement in:
 - **Hoppers** (item transport)
 - **Droppers** (item dispensing)
 - **Dispensers** (automated dispensing)
+- **Furnaces** (smelting equipment)
+- **Blast Furnaces** (fast smelting)
+- **Smokers** (food cooking)
+- **Auto Crafters** (automatic crafting)
 - **Item Frames** (display frames - regular and glow)
+- **Animal Inventories** (mules, donkeys, llamas with chests)
 
 ### 🤖 **Automated System Protection**
 - **Hopper blocking** - Prevent hoppers from collecting maces
 - **Hopper minecart blocking** - Stop moving hoppers from pickup
+- **Bundle protection** - Detect and block bundles containing maces
 - **Complete automation prevention** - No loopholes for item collection
 
 ### 💬 **Intelligent Messaging**
@@ -74,6 +80,10 @@ blocked-storages:
   hopper: true          # Hopper inventories
   dropper: true         # Dropper inventories
   dispenser: true       # Dispenser inventories
+  furnace: true         # Smelting furnaces
+  blast-furnace: true   # Fast ore smelting
+  smoker: true          # Food cooking equipment
+  crafter: true         # Automatic crafting blocks
 ```
 
 ### **Automated System Protection**
@@ -86,6 +96,9 @@ block-hopper-minecart-pickup: true
 
 # Prevent placing maces in item frames
 block-item-frame-placement: true
+
+# Prevent bundles containing maces from being placed
+block-bundles-with-maces: true
 ```
 
 ### **Message Customization**
@@ -122,7 +135,8 @@ messages:
 2. **Shift-clicking** - Quick-moving maces to storage inventories  
 3. **Hotkey swapping** - Using number keys (1-9) to place maces
 4. **Item frame placement** - Right-clicking item frames with maces
-5. **Pickup at limit** - Collecting maces when already at maximum
+5. **Bundle placement** - Placing bundles containing maces in storage
+6. **Pickup at limit** - Collecting maces when already at maximum
 
 ### **Automated Systems Blocked:**
 1. **Hopper collection** - Hoppers sucking maces from ground
@@ -167,6 +181,7 @@ messages:
 - **Minecraft Version:** 1.21.1+
 - **Server Software:** Paper (recommended), Spigot
 - **Java Version:** 21+
+- **Animal Support:** Works with mules, donkeys, and llamas with chest inventories
 
 ### **Performance**
 - **Lightweight design** - Minimal server impact

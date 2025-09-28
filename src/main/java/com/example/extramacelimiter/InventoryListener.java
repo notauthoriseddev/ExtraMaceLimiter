@@ -15,6 +15,7 @@ import org.bukkit.event.player.PlayerInteractEntityEvent;
 import org.bukkit.event.player.PlayerPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.BundleMeta;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
@@ -75,6 +76,32 @@ public class InventoryListener implements Listener {
         return blocked;
     }
 
+
+    private boolean containsMaces(ItemStack item) {
+        if (item == null) return false;
+        
+        // check if item is mace
+        if (item.getType() == Material.MACE) {
+            return true;
+        }
+        
+        // check if in bundle
+        if (plugin.getConfig().getBoolean("block-bundles-with-maces", true) && 
+            item.getType() == Material.BUNDLE && item.hasItemMeta()) {
+            
+            BundleMeta bundleMeta = (BundleMeta) item.getItemMeta();
+            if (bundleMeta.hasItems()) {
+                for (ItemStack bundledItem : bundleMeta.getItems()) {
+                    if (bundledItem != null && bundledItem.getType() == Material.MACE) {
+                        return true;
+                    }
+                }
+            }
+        }
+        
+        return false;
+    }
+
     @EventHandler
     public void onInventoryClick(InventoryClickEvent event) {
         if (!(event.getWhoClicked() instanceof Player)) {
@@ -93,15 +120,15 @@ public class InventoryListener implements Listener {
             if (event.getRawSlot() < inv.getSize()) {
                 ItemStack holding = event.getCursor();
 
-                // check if its a mace
-                if (holding != null && holding.getType() == Material.MACE) {
+                // check if its a mace or bundle with maces
+                if (containsMaces(holding)) {
                     shouldBlock = true;
                 }
                 
                 // the hotkey swapping
                 if (event.getHotbarButton() != -1) {
                     ItemStack hotbarItem = player.getInventory().getItem(event.getHotbarButton());
-                    if (hotbarItem != null && hotbarItem.getType() == Material.MACE) {
+                    if (containsMaces(hotbarItem)) {
                         shouldBlock = true;
                     }
                 }
@@ -110,7 +137,7 @@ public class InventoryListener implements Listener {
             else if (event.isShiftClick()) {
                 ItemStack clicked = event.getCurrentItem();
                 
-                if (clicked != null && clicked.getType() == Material.MACE) {
+                if (containsMaces(clicked)) {
                     shouldBlock = true;
                 }
             }
@@ -210,7 +237,7 @@ public class InventoryListener implements Listener {
             Player player = event.getPlayer();
             ItemStack heldItem = player.getInventory().getItemInMainHand();
             
-            if (heldItem != null && heldItem.getType() == Material.MACE) {
+            if (containsMaces(heldItem)) {
                 event.setCancelled(true);
                 handleMaceBlockMessage(player);
             }

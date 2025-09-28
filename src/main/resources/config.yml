@@ -77,6 +77,11 @@ block-hopper-minecart-pickup: true
 # false = allow item frame placement
 block-item-frame-placement: true
 
+# Prevent bundles containing maces from being placed in blocked inventories
+# true = block bundles with maces (recommended)
+# false = allow bundles with maces
+block-bundles-with-maces: true
+
 
 # Warning messages (i made these look similar to worldguard messages)
 messages:
