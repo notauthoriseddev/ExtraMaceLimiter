@@ -59,6 +59,18 @@ public class InventoryListener implements Listener {
         if (plugin.getConfig().getBoolean("blocked-storages.dispenser", true)) {
             blocked.add(InventoryType.DISPENSER);
         }
+        if (plugin.getConfig().getBoolean("blocked-storages.furnace", true)) {
+            blocked.add(InventoryType.FURNACE);
+        }
+        if (plugin.getConfig().getBoolean("blocked-storages.blast-furnace", true)) {
+            blocked.add(InventoryType.BLAST_FURNACE);
+        }
+        if (plugin.getConfig().getBoolean("blocked-storages.smoker", true)) {
+            blocked.add(InventoryType.SMOKER);
+        }
+        if (plugin.getConfig().getBoolean("blocked-storages.crafter", true)) {
+            blocked.add(InventoryType.CRAFTER);
+        }
         
         return blocked;
     }

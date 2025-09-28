@@ -48,6 +48,18 @@ blocked-storages:
   
   # Dispensers 
   dispenser: true
+  
+  # Furnaces 
+  furnace: true
+  
+  # Blast furnaces 
+  blast-furnace: true
+  
+  # Smokers
+  smoker: true
+  
+  # Auto crafters 
+  crafter: true
 
 
 # Prevent hoppers from picking up maces from the ground

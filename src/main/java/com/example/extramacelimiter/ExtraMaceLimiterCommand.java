@@ -70,7 +70,7 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
             String maxMacesDisplay = maxMaces == -1 ? "unlimited" : String.valueOf(maxMaces);
             
             sender.sendMessage(ChatColor.GRAY + "Max maces per player: " + ChatColor.WHITE + maxMacesDisplay);
-            sender.sendMessage(ChatColor.GRAY + "Blocked storage types: " + ChatColor.WHITE + getBlockedStorageCount() + "/7");
+            sender.sendMessage(ChatColor.GRAY + "Blocked storage types: " + ChatColor.WHITE + getBlockedStorageCount() + "/11");
             sender.sendMessage(ChatColor.GRAY + "Hopper pickup blocking: " + ChatColor.WHITE + 
                 (plugin.getConfig().getBoolean("block-hopper-pickup", true) ? "enabled" : "disabled"));
             sender.sendMessage(ChatColor.GRAY + "Item frame blocking: " + ChatColor.WHITE + 
@@ -111,7 +111,7 @@ public class ExtraMaceLimiterCommand implements CommandExecutor, TabCompleter {
 
     private int getBlockedStorageCount() {
         int count = 0;
-        String[] storageTypes = {"chest", "ender-chest", "barrel", "shulker-box", "hopper", "dropper", "dispenser"};
+        String[] storageTypes = {"chest", "ender-chest", "barrel", "shulker-box", "hopper", "dropper", "dispenser", "furnace", "blast-furnace", "smoker", "crafter"};
         
         for (String storage : storageTypes) {
             if (plugin.getConfig().getBoolean("blocked-storages." + storage, true)) {
